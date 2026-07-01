@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>雙爽贏｜539 對帳列印機</title>
+    <meta
+      name="description"
+      content="本機暫存的雙爽贏 539 對帳列印工具，支援坐車、立柱、連碰、上下單價與價差計算。"
+    />
+    <link rel="icon" type="image/svg+xml" href="./assets/logo.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="appRoot" class="page" data-view="up">
+      <header class="app-header no-print">
+        <div class="brand-block">
+          <img class="brand-logo" src="./assets/logo.svg" alt="雙爽贏 Logo" />
+          <div>
+          <h1>雙爽贏｜539 對帳列印機</h1>
+          <p>資料只暫存在本機瀏覽器；按清空才會清除目前明細。</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="togglePricesBtn" type="button" class="secondary">隱藏單價</button>
+          <button id="clearBtn" type="button" class="secondary">清空</button>
+          <button id="printBtn" type="button" class="primary">列印 / 另存 PDF</button>
+        </div>
+      </header>
+
+      <section class="print-title print-only">
+        <h1><img class="print-logo" src="./assets/logo.svg" alt="" />雙爽贏｜539 對帳列印機</h1>
+      </section>
+
+      <section class="card settings-card">
+        <div class="settings-main-row">
+          <label>
+            日期
+            <input id="dateInput" type="date" />
+          </label>
+          <label class="draw-setting">
+            今日開獎號碼
+            <div class="draw-inputs" id="drawNumbersInput">
+              <input class="draw-number-input" type="text" inputmode="numeric" maxlength="2" aria-label="開獎號碼1" />
+              <input class="draw-number-input" type="text" inputmode="numeric" maxlength="2" aria-label="開獎號碼2" />
+              <input class="draw-number-input" type="text" inputmode="numeric" maxlength="2" aria-label="開獎號碼3" />
+              <input class="draw-number-input" type="text" inputmode="numeric" maxlength="2" aria-label="開獎號碼4" />
+              <input class="draw-number-input" type="text" inputmode="numeric" maxlength="2" aria-label="開獎號碼5" />
+              <button id="confirmDrawBtn" class="draw-confirm-btn" type="button">確認</button>
+            </div>
+          </label>
+        </div>
+        <div class="settings-price-row">
+          <label class="setting-price setting-down">
+            坐車下單價
+            <input id="carDownPriceInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label class="setting-price setting-up">
+            坐車上單價
+            <input id="carUpPriceInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label class="setting-price setting-down">
+            立柱下單價
+            <input id="pillarDownPriceInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label class="setting-price setting-up">
+            立柱上單價
+            <input id="pillarUpPriceInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+        <label class="setting-price setting-down">
+          連碰二星下
+          <input id="comboTwoDownPriceInput" type="number" min="0" step="0.01" value="0" />
+        </label>
+        <label class="setting-price setting-up">
+          連碰二星上
+          <input id="comboTwoUpPriceInput" type="number" min="0" step="0.01" value="0" />
+        </label>
+        <label class="setting-price setting-down">
+          連碰三星下
+          <input id="comboThreeDownPriceInput" type="number" min="0" step="0.01" value="0" />
+        </label>
+        <label class="setting-price setting-up">
+          連碰三星上
+          <input id="comboThreeUpPriceInput" type="number" min="0" step="0.01" value="0" />
+        </label>
+        <label class="setting-price setting-down">
+          連碰四星下
+          <input id="comboFourDownPriceInput" type="number" min="0" step="0.01" value="0" />
+        </label>
+        <label class="setting-price setting-up">
+          連碰四星上
+          <input id="comboFourUpPriceInput" type="number" min="0" step="0.01" value="0" />
+        </label>
+        </div>
+        <div class="settings-prize-row">
+          <label class="setting-prize">
+            坐車中一車
+            <input id="carPrizeInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label class="setting-prize">
+            立柱二星獎
+            <input id="pillarTwoPrizeInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label class="setting-prize">
+            立柱三星獎
+            <input id="pillarThreePrizeInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label class="setting-prize">
+            立柱四星獎
+            <input id="pillarFourPrizeInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label class="setting-prize">
+            連碰二星獎
+            <input id="comboTwoPrizeInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label class="setting-prize">
+            連碰三星獎
+            <input id="comboThreePrizeInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label class="setting-prize">
+            連碰四星獎
+            <input id="comboFourPrizeInput" type="number" min="0" step="0.01" value="0" />
+          </label>
+        </div>
+        <p class="settings-memory-note no-print">單價、中獎金額、明細與開獎號碼會暫存在本機瀏覽器；按清空才會刪除明細。</p>
+      </section>
+
+      <section class="card details-card">
+        <div class="section-heading">
+          <h2>明細</h2>
+          <p class="no-print">坐車金額＝號碼數 × 車數 × 單價；立柱輸入柱型後會依每一柱分開輸入。</p>
+        </div>
+        <div class="view-switch no-print" aria-label="切換列印視角">
+          <button class="view-btn" type="button" data-view="up">上家</button>
+          <button class="view-btn" type="button" data-view="margin">中間價差</button>
+          <button class="view-btn" type="button" data-view="down">下家</button>
+        </div>
+        <div class="print-view-title print-only">
+          <span>視角：</span><strong id="printViewName">上家</strong>
+        </div>
+
+        <div class="table-wrap">
+          <table id="rowsTable">
+            <thead>
+              <tr>
+                <th class="col-item">項目</th>
+                <th class="col-numbers">號碼 / 柱號碼</th>
+                <th class="col-stars">星別</th>
+                <th class="pillar-pattern-col">柱型</th>
+                <th class="count-col">組數</th>
+                <th class="view-col view-down unit-price-col">下單價</th>
+                <th class="view-col view-up unit-price-col">上單價</th>
+                <th class="view-col view-margin unit-price-col">價差單價</th>
+                <th class="view-col view-down">下家金額</th>
+                <th class="view-col view-up">上家金額</th>
+                <th class="view-col view-margin">價差</th>
+                <th class="no-print"></th>
+              </tr>
+            </thead>
+            <tbody id="rowsBody"></tbody>
+          </table>
+        </div>
+        <div id="printRows" class="print-rows print-only"></div>
+        <div class="table-actions no-print">
+          <button id="addRowBtn" type="button" class="primary add-row-bottom-btn">＋新增一列</button>
+        </div>
+      </section>
+
+      <section class="bottom-summary-grid">
+        <div class="type-summary-card">
+          <span>坐車總注</span>
+          <strong id="carCountTotal">0 車</strong>
+          <small id="carAmountTotal">$0</small>
+          <div class="summary-breakdown" id="carBreakdown"></div>
+        </div>
+        <div class="type-summary-card">
+          <span>立柱總注</span>
+          <strong id="pillarCountTotal">0 注</strong>
+          <small id="pillarAmountTotal">$0</small>
+          <div class="summary-breakdown" id="pillarBreakdown"></div>
+        </div>
+        <div class="total-card view-total view-down">
+          <span>下家給你</span>
+          <strong id="downTotal">$0</strong>
+          <div class="summary-breakdown total-breakdown" id="downBreakdown"></div>
+        </div>
+        <div class="total-card view-total view-up">
+          <span>你給上家</span>
+          <strong id="upTotal">$0</strong>
+          <div class="summary-breakdown total-breakdown" id="upBreakdown"></div>
+        </div>
+        <div class="total-card accent view-total view-margin">
+          <span>你留價差</span>
+          <strong id="marginTotal">$0</strong>
+          <div class="summary-breakdown total-breakdown" id="marginBreakdown"></div>
+        </div>
+      </section>
+    </main>
+
+    <template id="rowTemplate">
+      <tr class="entry-row">
+        <td>
+          <select class="type-input">
+            <option value="坐車">坐車</option>
+            <option value="立柱">立柱</option>
+            <option value="連碰">連碰</option>
+            <option value="手動">手動</option>
+          </select>
+          <strong class="type-print print-only">坐車</strong>
+          <small class="pillar-item-summary"></small>
+        </td>
+        <td class="numbers-cell"></td>
+        <td class="stars-cell">
+          <div class="stars-input">
+            <label><input class="star-checkbox" type="checkbox" value="二星" checked />二星</label>
+            <label><input class="star-checkbox" type="checkbox" value="三星" />三星</label>
+            <label><input class="star-checkbox" type="checkbox" value="四星" />四星</label>
+          </div>
+          <small class="stars-check-note"></small>
+          <div class="row-warning"></div>
+          <span class="stars-na">-</span>
+        </td>
+        <td class="pillar-pattern-col">
+          <input class="pillar-pattern-input" type="text" inputmode="numeric" placeholder="例：111112" maxlength="12" />
+        </td>
+        <td class="count-col">
+          <div class="count-field">
+            <input class="count-input" type="number" min="0" step="0.01" value="1" />
+            <span class="count-unit">車</span>
+          </div>
+          <div class="pillar-counts-field">
+            <div class="pillar-count-row">
+              <label>二星<input class="pillar-star-count-input" type="number" min="0" step="0.01" data-star="二星" aria-label="立柱二星下注組數" value="1" /></label>
+              <small class="pillar-count-note" data-star="二星"></small>
+            </div>
+            <div class="pillar-count-row">
+              <label>三星<input class="pillar-star-count-input" type="number" min="0" step="0.01" data-star="三星" aria-label="立柱三星下注組數" value="0" /></label>
+              <small class="pillar-count-note" data-star="三星"></small>
+            </div>
+            <div class="pillar-count-row">
+              <label>四星<input class="pillar-star-count-input" type="number" min="0" step="0.01" data-star="四星" aria-label="立柱四星下注組數" value="0" /></label>
+              <small class="pillar-count-note" data-star="四星"></small>
+            </div>
+            <strong class="pillar-count-total"></strong>
+          </div>
+        </td>
+        <td class="view-col view-down unit-price-col">
+          <input class="down-price-input" type="number" min="0" step="0.01" value="0" aria-label="下單價" />
+        </td>
+        <td class="view-col view-up unit-price-col">
+          <input class="up-price-input" type="number" min="0" step="0.01" value="0" aria-label="上單價" />
+        </td>
+        <td class="money margin-price view-col view-margin unit-price-col">$0</td>
+        <td class="money down-amount view-col view-down">$0</td>
+        <td class="money up-amount view-col view-up">$0</td>
+        <td class="money margin-amount view-col view-margin">$0</td>
+        <td class="no-print">
+          <button class="delete-row-btn danger" type="button">刪除</button>
+        </td>
+      </tr>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

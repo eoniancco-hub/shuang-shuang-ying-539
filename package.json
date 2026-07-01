@@ -1,0 +1,15 @@
+{
+  "name": "539-print-calculator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "不儲存資料的雙爽贏 539 對帳列印工具。",
+  "scripts": {
+    "start": "python3 -m http.server 5173"
+  },
+  "keywords": [
+    "calculator",
+    "print",
+    "static-site"
+  ],
+  "license": "MIT"
+}
