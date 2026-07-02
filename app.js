@@ -176,9 +176,7 @@ function renderBreakdown(element, breakdown, amountKey, formulaText = "") {
   const subtotal = stake - prize;
   element.innerHTML = `
     ${formulaText ? `<span class="unit-price-col summary-formula">${formulaText}</span>` : ""}
-    <span>支出 ${formatMoney(stake)}</span>
-    <span class="win-line">中獎金額 ${formatMoney(prize)}</span>
-    <span>小計 ${formatMoney(subtotal)}</span>
+    <span class="settlement-formula">簽牌費用 ${formatMoney(stake)} - 中獎金額 ${formatMoney(prize)} = <b>${formatMoney(subtotal)}</b></span>
   `;
 }
 
@@ -188,9 +186,7 @@ function renderTypeBreakdown(element, breakdown, amountKey, formulaText = "") {
   const subtotal = stake - prize;
   element.innerHTML = `
     ${formulaText ? `<span class="unit-price-col summary-formula">${formulaText}</span>` : ""}
-    <span>支出 ${formatMoney(stake)}</span>
-    <span class="win-line">中獎金額 ${formatMoney(prize)}</span>
-    <span>小計 ${formatMoney(stake)} - ${formatMoney(prize)} = ${formatMoney(subtotal)}</span>
+    <span class="settlement-formula">簽牌費用 ${formatMoney(stake)} - 中獎金額 ${formatMoney(prize)} = <b>${formatMoney(subtotal)}</b></span>
   `;
 }
 
