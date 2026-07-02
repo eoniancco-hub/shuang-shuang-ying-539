@@ -975,6 +975,7 @@ body.is-printing .print-rows {
 }
 
 body.is-printing .card,
+body.is-printing .balance-card,
 body.is-printing .type-summary-card,
 body.is-printing .total-card {
   box-shadow: none;
@@ -984,18 +985,24 @@ body.is-printing .total-card {
 }
 
 body.is-printing .card {
-  padding: 10px;
-  margin-bottom: 8px;
+  padding: 4px 6px;
+  margin-bottom: 4px;
 }
 
+body.is-printing .balance-card,
 body.is-printing .type-summary-card,
 body.is-printing .total-card {
-  padding: 10px;
+  padding: 5px 6px;
 }
 
 body.is-printing .print-title h1 {
-  font-size: 18px;
-  margin-bottom: 6px;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+body.is-printing .print-logo {
+  width: 20px;
+  height: 20px;
 }
 
 body.is-printing label,
@@ -1004,7 +1011,7 @@ body.is-printing .section-heading p,
 body.is-printing .summary-breakdown,
 body.is-printing .type-summary-card span,
 body.is-printing .total-card span {
-  font-size: 12px;
+  font-size: 10px;
 }
 
 body.is-printing input,
@@ -1034,14 +1041,15 @@ body.is-printing .draw-confirm-btn {
 
 body.is-printing .settings-card {
   width: 100%;
-  padding: 6px 0;
+  padding: 2px 0;
   border-left: 0;
   border-right: 0;
   overflow: visible;
 }
 
 body.is-printing .settings-main-row {
-  grid-template-columns: 150px 260px;
+  grid-template-columns: 120px 220px;
+  gap: 6px;
 }
 
 body.is-printing .settings-groups-row {
@@ -1183,9 +1191,107 @@ body.is-printing .row-warning {
 }
 
 body.is-printing .bottom-summary-grid {
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
   break-inside: avoid;
+}
+
+body.is-printing .details-card {
+  border-top-width: 1px;
+}
+
+body.is-printing .section-heading {
+  margin-bottom: 2px;
+}
+
+body.is-printing .section-heading h2 {
+  font-size: 12px;
+}
+
+body.is-printing .print-row {
+  grid-template-columns: 58px minmax(240px, 1fr) minmax(190px, 0.9fr) 82px;
+  gap: 4px;
+  padding: 2px 4px;
+  min-height: 22px;
+  line-height: 1.05;
+}
+
+body.is-printing .print-row-type strong {
+  font-size: 10px;
+}
+
+body.is-printing .print-row-type small {
+  margin-top: 1px;
+  font-size: 8.5px;
+  line-height: 1.05;
+}
+
+body.is-printing .print-row-numbers {
+  gap: 2px;
+}
+
+body.is-printing .print-row-count {
+  font-size: 9px;
+  line-height: 1.08;
+}
+
+body.is-printing .print-row-count span {
+  display: inline;
+  margin-right: 5px;
+}
+
+body.is-printing .print-row-count b {
+  min-width: 0;
+  margin-right: 1px;
+}
+
+body.is-printing .print-row-amount {
+  line-height: 1.05;
+}
+
+body.is-printing .print-row-amount span,
+body.is-printing .print-row-amount small {
+  font-size: 8.5px;
+}
+
+body.is-printing .print-row-amount strong {
+  font-size: 11px;
+}
+
+body.is-printing .print-number-group,
+body.is-printing .number-group,
+body.is-printing .print-pillar-stack {
+  gap: 1px;
+  padding: 1px 2px;
+}
+
+body.is-printing .print-group-separator,
+body.is-printing .group-separator {
+  font-size: 11px;
+}
+
+body.is-printing .print-rows .number-chip {
+  min-width: 19px;
+  height: 19px;
+  padding: 0 3px;
+  font-size: 11px;
+  border-width: 1px;
+}
+
+body.is-printing .summary-breakdown {
+  gap: 1px;
+  margin-top: 3px;
+  font-size: 9px;
+}
+
+body.is-printing .balance-card input {
+  max-width: 100px;
+  font-size: 11px;
+}
+
+body.is-printing .type-summary-card strong,
+body.is-printing .total-card strong {
+  font-size: 14px;
 }
 
 @media (max-width: 900px) {
@@ -1228,7 +1334,7 @@ body.is-printing .bottom-summary-grid {
 @media print {
   @page {
     size: A4 landscape;
-    margin: 10mm;
+    margin: 6mm;
   }
 
   body {
@@ -1271,6 +1377,7 @@ body.is-printing .bottom-summary-grid {
   }
 
   .card,
+  .balance-card,
   .type-summary-card,
   .total-card {
     box-shadow: none;
@@ -1280,18 +1387,24 @@ body.is-printing .bottom-summary-grid {
   }
 
   .card {
-    padding: 10px;
-    margin-bottom: 8px;
+    padding: 4px 6px;
+    margin-bottom: 4px;
   }
 
+  .balance-card,
   .type-summary-card,
   .total-card {
-    padding: 10px;
+    padding: 5px 6px;
   }
 
   .print-title h1 {
-    font-size: 18px;
-    margin-bottom: 6px;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .print-logo {
+    width: 20px;
+    height: 20px;
   }
 
   label,
@@ -1299,7 +1412,7 @@ body.is-printing .bottom-summary-grid {
   .summary-breakdown,
   .type-summary-card span,
   .total-card span {
-    font-size: 12px;
+    font-size: 10px;
   }
 
   input,
@@ -1329,13 +1442,14 @@ body.is-printing .bottom-summary-grid {
 
   .settings-card {
     width: 100%;
-    padding: 6px 0;
+    padding: 2px 0;
     border-left: 0;
     border-right: 0;
   }
 
   .settings-main-row {
-    grid-template-columns: 1fr 1.4fr;
+    grid-template-columns: 120px 220px;
+    gap: 6px;
   }
 
   .settings-groups-row {
@@ -1408,10 +1522,11 @@ body.is-printing .bottom-summary-grid {
   }
 
   .number-chip {
-    min-width: 26px;
-    height: 26px;
-    padding: 0 6px;
-    font-size: 15px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 3px;
+    font-size: 11px;
+    border-width: 1px;
   }
 
   .hit-number {
@@ -1484,7 +1599,98 @@ body.is-printing .bottom-summary-grid {
   }
 
   .bottom-summary-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    break-inside: avoid;
+  }
+
+  .details-card {
+    border-top-width: 1px;
+  }
+
+  .section-heading {
+    margin-bottom: 2px;
+  }
+
+  .section-heading h2 {
+    font-size: 12px;
+  }
+
+  .print-row {
+    grid-template-columns: 58px minmax(240px, 1fr) minmax(190px, 0.9fr) 82px;
+    gap: 4px;
+    padding: 2px 4px;
+    min-height: 22px;
+    line-height: 1.05;
+  }
+
+  .print-row-type strong {
+    font-size: 10px;
+  }
+
+  .print-row-type small {
+    margin-top: 1px;
+    font-size: 8.5px;
+    line-height: 1.05;
+  }
+
+  .print-row-numbers {
+    gap: 2px;
+  }
+
+  .print-row-count {
+    font-size: 9px;
+    line-height: 1.08;
+  }
+
+  .print-row-count span {
+    display: inline;
+    margin-right: 5px;
+  }
+
+  .print-row-count b {
+    min-width: 0;
+    margin-right: 1px;
+  }
+
+  .print-row-amount {
+    line-height: 1.05;
+  }
+
+  .print-row-amount span,
+  .print-row-amount small {
+    font-size: 8.5px;
+  }
+
+  .print-row-amount strong {
+    font-size: 11px;
+  }
+
+  .print-number-group,
+  .number-group,
+  .print-pillar-stack {
+    gap: 1px;
+    padding: 1px 2px;
+  }
+
+  .print-group-separator,
+  .group-separator {
+    font-size: 11px;
+  }
+
+  .summary-breakdown {
+    gap: 1px;
+    margin-top: 3px;
+    font-size: 9px;
+  }
+
+  .balance-card input {
+    max-width: 100px;
+    font-size: 11px;
+  }
+
+  .type-summary-card strong,
+  .total-card strong {
+    font-size: 14px;
   }
 }
