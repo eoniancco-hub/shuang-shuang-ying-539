@@ -326,12 +326,16 @@ function loadDraft() {
 
 function getCountUnit(type) {
   if (type === "坐車") return "車";
-  if (type === "連碰") return "碰";
+  if (isComboType(type)) return "碰";
   return "組";
 }
 
 function typeNeedsStars(type) {
-  return type === "立柱" || type === "連碰";
+  return type === "立柱" || isComboType(type);
+}
+
+function isComboType(type) {
+  return type === "連碰" || type === "多組連碰";
 }
 
 function getSelectedStars(row) {
@@ -431,6 +435,36 @@ function pillarCombinationCount(values, pickCount, startIndex = 0) {
   return total;
 }
 
+function parseGroupedNumbers(raw) {
+  const groups = String(raw || "")
+    .split(/[\/／\n]+/)
+    .map((group) => group.trim())
+    .filter(Boolean);
+  const errors = [];
+  const normalizedGroups = groups.map((group, index) => {
+    const { normalized, errors: groupErrors } = normalizeNumbers(group);
+    errors.push(...groupErrors.map((message) => `第 ${index + 1} 組：${message}`));
+    return normalized;
+  });
+
+  return { groups: normalizedGroups, errors };
+}
+
+function getMultiComboGroups(row) {
+  const input = row.querySelector(".plain-numbers-input");
+  return parseGroupedNumbers(input?.value || "").groups.filter((group) => group.length > 0);
+}
+
+function getMultiComboFormulaCount(row, star) {
+  const groupSizes = getMultiComboGroups(row).map((group) => group.length);
+  return pillarCombinationCount(groupSizes, starToPickCount(star));
+}
+
+function getMultiComboHitValues(row, drawSet) {
+  if (drawSet.size === 0) return [];
+  return getMultiComboGroups(row).map((group) => group.filter((number) => drawSet.has(number)).length);
+}
+
 function getPillarFormulaCount(row, star) {
   const { values } = parsePattern(row.querySelector(".pillar-pattern-input").value);
   return pillarCombinationCount(values, starToPickCount(star));
@@ -490,6 +524,12 @@ function getStarCheckText(row, type) {
       .join(" / ");
   }
 
+  if (type === "多組連碰") {
+    return selectedStars
+      .map((star) => `${star}${formatCount(getMultiComboFormulaCount(row, star))}組`)
+      .join(" / ");
+  }
+
   if (type === "立柱") {
     return "";
   }
@@ -518,10 +558,11 @@ function getPrintCountLines(type, row, count, billableCount) {
     return lines;
   }
 
-  if (type === "連碰") {
+  if (isComboType(type)) {
     const numberCount = getPlainNumberCount(row);
     const lines = getSelectedStars(row).map((star) => {
-      const groupCount = combination(numberCount, starToPickCount(star));
+      const groupCount =
+        type === "多組連碰" ? getMultiComboFormulaCount(row, star) : combination(numberCount, starToPickCount(star));
       return `${star} ${formatCount(groupCount)}組 × ${formatCount(count)} = ${formatCount(groupCount * count)}注`;
     });
     lines.push(`合計 ${formatCount(billableCount)}注`);
@@ -572,6 +613,18 @@ function syncPillarPatternState(row, type) {
   input.disabled = !isPillar;
   input.placeholder = isPillar ? "例：111112" : "-";
   if (!isPillar) input.value = "";
+}
+
+function syncPlainNumbersHint(row, type) {
+  const input = row.querySelector(".plain-numbers-input");
+  if (!input) return;
+
+  if (type === "多組連碰") {
+    input.placeholder = "例：01 02 / 03 04 / 05 06";
+    return;
+  }
+
+  input.placeholder = "例：08 16 38 33 34";
 }
 
 function getGlobalPrices(type) {
@@ -667,6 +720,32 @@ function renderNumberPreview(preview, raw, drawSet) {
   });
 }
 
+function renderGroupedNumberPreview(preview, raw, drawSet) {
+  const { groups } = parseGroupedNumbers(raw);
+  preview.innerHTML = "";
+  preview.hidden = groups.length === 0;
+
+  groups.forEach((group, index) => {
+    if (index > 0) {
+      const slash = document.createElement("span");
+      slash.className = "group-separator";
+      slash.textContent = "/";
+      preview.append(slash);
+    }
+
+    const groupEl = document.createElement("span");
+    groupEl.className = "number-group";
+    group.forEach((number) => {
+      const chip = document.createElement("span");
+      chip.className = "number-chip";
+      chip.textContent = number;
+      if (drawSet.has(number)) chip.classList.add("hit-number");
+      groupEl.append(chip);
+    });
+    preview.append(groupEl);
+  });
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -684,6 +763,14 @@ function printNumberChip(number, drawSet) {
 }
 
 function getPrintNumbersHtml(row, type, drawSet) {
+  if (type === "多組連碰") {
+    const input = row.querySelector(".plain-numbers-input");
+    const { groups } = parseGroupedNumbers(input?.value || "");
+    return groups
+      .map((group) => `<span class="print-number-group">${group.map((number) => printNumberChip(number, drawSet)).join("")}</span>`)
+      .join(`<span class="print-group-separator">/</span>`);
+  }
+
   if (type !== "立柱") {
     const input = row.querySelector(".plain-numbers-input");
     return splitNumbers(input?.value || "")
@@ -840,11 +927,13 @@ function setNumbersCell(row) {
     input.addEventListener("input", () => recalculate());
     input.addEventListener("blur", () => normalizeRowNumbers(row));
     cell.append(wrapper);
+    syncPlainNumbersHint(row, type);
   }
 }
 
 function updateNumberPreviews(row, drawSet) {
-  if (row.querySelector(".type-input").value === "立柱") {
+  const type = row.querySelector(".type-input").value;
+  if (type === "立柱") {
     row.querySelectorAll(".pillar-field").forEach((field) => {
       const input = field.querySelector(".pillar-number-input");
       const preview = field.querySelector(".number-preview");
@@ -855,7 +944,10 @@ function updateNumberPreviews(row, drawSet) {
 
   const input = row.querySelector(".plain-numbers-input");
   const preview = row.querySelector(".number-preview");
-  if (input && preview) renderNumberPreview(preview, input.value, drawSet);
+  if (input && preview) {
+    if (type === "多組連碰") renderGroupedNumberPreview(preview, input.value, drawSet);
+    else renderNumberPreview(preview, input.value, drawSet);
+  }
 }
 
 function rowHasDrawHit(row, drawSet) {
@@ -865,6 +957,10 @@ function rowHasDrawHit(row, drawSet) {
     return Array.from(row.querySelectorAll(".pillar-number-input")).some((input) =>
       normalizeNumbers(input.value).normalized.some((number) => drawSet.has(number))
     );
+  }
+
+  if (row.querySelector(".type-input").value === "多組連碰") {
+    return getMultiComboGroups(row).some((group) => group.some((number) => drawSet.has(number)));
   }
 
   const input = row.querySelector(".plain-numbers-input");
@@ -882,6 +978,12 @@ function getBillableCount(type, row, count) {
   if (type === "立柱") {
     return getSelectedStars(row).reduce((total, star) => {
       return total + getPillarBillableCount(row, star);
+    }, 0);
+  }
+
+  if (type === "多組連碰") {
+    return getSelectedStars(row).reduce((total, star) => {
+      return total + getMultiComboFormulaCount(row, star) * count;
     }, 0);
   }
 
@@ -913,6 +1015,7 @@ function calculatePillarAmounts(row) {
 }
 
 function calculateComboAmounts(row, count) {
+  const type = row.querySelector(".type-input").value;
   const numberCount = getPlainNumberCount(row);
   const selectedStars = getSelectedStars(row);
   let downAmount = 0;
@@ -920,7 +1023,8 @@ function calculateComboAmounts(row, count) {
 
   selectedStars.forEach((star) => {
     const pickCount = starToPickCount(star);
-    const groupCount = combination(numberCount, pickCount) * count;
+    const baseCount = type === "多組連碰" ? getMultiComboFormulaCount(row, star) : combination(numberCount, pickCount);
+    const groupCount = baseCount * count;
     const { downPrice, upPrice } = getComboStarPrice(star);
     downAmount += groupCount * downPrice;
     upAmount += groupCount * upPrice;
@@ -972,11 +1076,15 @@ function calculatePrizeAmounts(row, type, count, drawSet) {
     upPrize = winningCars * toNumber(carPrizeInput.value);
   }
 
-  if (type === "連碰") {
+  if (isComboType(type)) {
     const hitCount = getPlainHitCount(row, drawSet);
+    const hitValues = type === "多組連碰" ? getMultiComboHitValues(row, drawSet) : [];
     getSelectedStars(row).forEach((star) => {
       const pickCount = starToPickCount(star);
-      const winningGroups = combination(hitCount, pickCount) * count;
+      const winningGroups =
+        type === "多組連碰"
+          ? pillarCombinationCount(hitValues, pickCount) * count
+          : combination(hitCount, pickCount) * count;
       const { downPrize: starDownPrize, upPrize: starUpPrize } = getComboStarPrize(star);
       downPrize += winningGroups * starDownPrize;
       upPrize += winningGroups * starUpPrize;
@@ -1013,10 +1121,14 @@ function getPrizeSettingWarnings(row, type, count, drawSet) {
     }
   }
 
-  if (type === "連碰") {
+  if (isComboType(type)) {
     const hitCount = getPlainHitCount(row, drawSet);
+    const hitValues = type === "多組連碰" ? getMultiComboHitValues(row, drawSet) : [];
     getSelectedStars(row).forEach((star) => {
-      const winningGroups = combination(hitCount, starToPickCount(star)) * count;
+      const winningGroups =
+        type === "多組連碰"
+          ? pillarCombinationCount(hitValues, starToPickCount(star)) * count
+          : combination(hitCount, starToPickCount(star)) * count;
       const { downPrize, upPrize } = getComboStarPrize(star);
       if (winningGroups > 0) {
         if (downPrize === 0 || upPrize === 0) missing.push(`連碰${star}獎`);
@@ -1053,6 +1165,10 @@ function normalizeRowNumbers(row) {
       const { normalized } = normalizeNumbers(input.value);
       input.value = normalized.join(" ");
     });
+  } else if (type === "多組連碰") {
+    const input = row.querySelector(".plain-numbers-input");
+    const { groups } = parseGroupedNumbers(input.value);
+    input.value = groups.map((group) => group.join(" ")).join(" / ");
   } else {
     const input = row.querySelector(".plain-numbers-input");
     const { normalized } = normalizeNumbers(input.value);
@@ -1068,7 +1184,7 @@ function getRowWarnings(row, drawSet) {
   const count = toNumber(row.querySelector(".count-input").value);
 
   if (typeNeedsStars(type) && getSelectedStars(row).length === 0) {
-    warnings.push("立柱/連碰請至少勾選一個星別");
+    warnings.push("星別請至少勾選一個");
   }
 
   if (type === "立柱") {
@@ -1087,6 +1203,15 @@ function getRowWarnings(row, drawSet) {
     });
 
     if (values.length > 0 && values.length < 2) warnings.push("立柱至少建議輸入 2 柱");
+  } else if (type === "多組連碰") {
+    const input = row.querySelector(".plain-numbers-input");
+    const { groups, errors } = parseGroupedNumbers(input?.value || "");
+    warnings.push(...errors);
+    if (groups.length > 0 && groups.length < 2) warnings.push("多組連碰至少需要 2 組，請用 / 分組");
+    getSelectedStars(row).forEach((star) => {
+      const pickCount = starToPickCount(star);
+      if (groups.length > 0 && groups.length < pickCount) warnings.push(`${star}至少需要 ${pickCount} 組`);
+    });
   } else {
     const input = row.querySelector(".plain-numbers-input");
     const { errors } = normalizeNumbers(input?.value || "");
@@ -1117,9 +1242,11 @@ function recalculate() {
     const type = row.querySelector(".type-input").value;
     row.classList.toggle("is-car", type === "坐車");
     row.classList.toggle("is-pillar", type === "立柱");
-    row.classList.toggle("is-combo", type === "連碰");
+    row.classList.toggle("is-combo", isComboType(type));
+    row.classList.toggle("is-multi-combo", type === "多組連碰");
     row.classList.toggle("is-manual", type === "手動");
     syncPillarPatternState(row, type);
+    syncPlainNumbersHint(row, type);
     const hasHit = rowHasDrawHit(row, drawSet);
     row.classList.toggle("has-hit", hasHit);
     const count = toNumber(row.querySelector(".count-input").value);
@@ -1138,7 +1265,7 @@ function recalculate() {
       upAmount = pillarAmounts.upAmount;
     }
 
-    if (type === "連碰") {
+    if (isComboType(type)) {
       const comboAmounts = calculateComboAmounts(row, count);
       downAmount = comboAmounts.downAmount;
       upAmount = comboAmounts.upAmount;
@@ -1151,12 +1278,12 @@ function recalculate() {
     const margin = downAmount - upAmount;
     const prizeAmounts = calculatePrizeAmounts(row, type, count, drawSet);
 
-    if (globalPrice.usesGlobalPrice || type === "連碰") {
+    if (globalPrice.usesGlobalPrice || isComboType(type)) {
       downPriceInput.value = downPrice ?? "";
       upPriceInput.value = upPrice ?? "";
       downPriceInput.readOnly = true;
       upPriceInput.readOnly = true;
-      const priceTitle = type === "連碰" ? "連碰使用下方二星/三星/四星獎欄位" : `${type}使用上方統一單價`;
+      const priceTitle = isComboType(type) ? "連碰使用下方二星/三星/四星獎欄位" : `${type}使用上方統一單價`;
       downPriceInput.title = priceTitle;
       upPriceInput.title = priceTitle;
     } else {

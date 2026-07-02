@@ -484,6 +484,25 @@ th {
   font-variant-numeric: tabular-nums;
 }
 
+.number-group,
+.print-number-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 3px 5px;
+  border: 1px dashed rgb(117 98 78 / 0.35);
+  border-radius: 14px;
+  background: rgb(255 250 240 / 0.72);
+}
+
+.group-separator,
+.print-group-separator {
+  color: var(--primary);
+  font-size: 20px;
+  font-weight: 900;
+}
+
 .hit-number {
   border: 3px solid var(--primary);
   background: #fff9e8;
