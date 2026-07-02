@@ -50,72 +50,96 @@
             </div>
           </label>
         </div>
-        <div class="settings-price-row">
-          <label class="setting-price setting-down">
-            坐車下單價
-            <input id="carDownPriceInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-price setting-up">
-            坐車上單價
-            <input id="carUpPriceInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-price setting-down">
-            立柱下單價
-            <input id="pillarDownPriceInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-price setting-up">
-            立柱上單價
-            <input id="pillarUpPriceInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-price setting-down">
-            連碰二星每碰
-            <input id="comboTwoUnitPriceInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-price setting-up">
-            連碰三星每碰
-            <input id="comboThreeUnitPriceInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-price setting-down">
-            連碰四星每碰
-            <input id="comboFourUnitPriceInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-price setting-option">
-            立柱注數
-            <span class="setting-checkbox">
-              <input id="pillarRoundUpInput" type="checkbox" />
-              無條件進位
-            </span>
-          </label>
-        </div>
-        <div class="settings-prize-row">
-          <label class="setting-prize">
-            坐車中一車
-            <input id="carPrizeInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-prize">
-            立柱二星獎
-            <input id="pillarTwoPrizeInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-prize">
-            立柱三星獎
-            <input id="pillarThreePrizeInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-prize">
-            立柱四星獎
-            <input id="pillarFourPrizeInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-prize">
-            連碰二星獎
-            <input id="comboTwoPrizeInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-prize">
-            連碰三星獎
-            <input id="comboThreePrizeInput" type="text" inputmode="decimal" value="0" />
-          </label>
-          <label class="setting-prize">
-            連碰四星獎
-            <input id="comboFourPrizeInput" type="text" inputmode="decimal" value="0" />
-          </label>
+        <div class="settings-groups-row">
+          <div class="settings-group">
+            <h3>車</h3>
+            <div class="settings-mini-grid">
+              <label class="setting-price setting-down">
+                下單價
+                <input id="carDownPriceInput" type="text" inputmode="decimal" value="0" />
+              </label>
+              <label class="setting-price setting-up">
+                上單價
+                <input id="carUpPriceInput" type="text" inputmode="decimal" value="0" />
+              </label>
+            </div>
+            <div class="settings-subtitle">獎金</div>
+            <div class="settings-mini-grid one-col">
+              <label class="setting-prize">
+                中一車
+                <input id="carPrizeInput" type="text" inputmode="decimal" value="0" />
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <h3>柱</h3>
+            <div class="settings-mini-grid">
+              <label class="setting-price setting-down">
+                下單價
+                <input id="pillarDownPriceInput" type="text" inputmode="decimal" value="0" />
+              </label>
+              <label class="setting-price setting-up">
+                上單價
+                <input id="pillarUpPriceInput" type="text" inputmode="decimal" value="0" />
+              </label>
+              <label class="setting-price setting-option">
+                注數
+                <span class="setting-checkbox">
+                  <input id="pillarRoundUpInput" type="checkbox" />
+                  無條件進位
+                </span>
+              </label>
+            </div>
+            <div class="settings-subtitle">獎金</div>
+            <div class="settings-mini-grid">
+              <label class="setting-prize">
+                二星獎
+                <input id="pillarTwoPrizeInput" type="text" inputmode="decimal" value="0" />
+              </label>
+              <label class="setting-prize">
+                三星獎
+                <input id="pillarThreePrizeInput" type="text" inputmode="decimal" value="0" />
+              </label>
+              <label class="setting-prize">
+                四星獎
+                <input id="pillarFourPrizeInput" type="text" inputmode="decimal" value="0" />
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <h3>碰</h3>
+            <div class="settings-mini-grid">
+              <label class="setting-price setting-down">
+                二星每碰
+                <input id="comboTwoUnitPriceInput" type="text" inputmode="decimal" value="0" />
+              </label>
+              <label class="setting-price setting-up">
+                三星每碰
+                <input id="comboThreeUnitPriceInput" type="text" inputmode="decimal" value="0" />
+              </label>
+              <label class="setting-price setting-down">
+                四星每碰
+                <input id="comboFourUnitPriceInput" type="text" inputmode="decimal" value="0" />
+              </label>
+            </div>
+            <div class="settings-subtitle">獎金</div>
+            <div class="settings-mini-grid">
+              <label class="setting-prize">
+                二星獎
+                <input id="comboTwoPrizeInput" type="text" inputmode="decimal" value="0" />
+              </label>
+              <label class="setting-prize">
+                三星獎
+                <input id="comboThreePrizeInput" type="text" inputmode="decimal" value="0" />
+              </label>
+              <label class="setting-prize">
+                四星獎
+                <input id="comboFourPrizeInput" type="text" inputmode="decimal" value="0" />
+              </label>
+            </div>
+          </div>
         </div>
         <p class="settings-memory-note no-print">單價、中獎金額、明細與開獎號碼會暫存在本機瀏覽器；按清空才會刪除明細。</p>
       </section>
