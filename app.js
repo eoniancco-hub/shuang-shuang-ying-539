@@ -17,12 +17,9 @@ const carUpPriceInput = document.querySelector("#carUpPriceInput");
 const pillarDownPriceInput = document.querySelector("#pillarDownPriceInput");
 const pillarUpPriceInput = document.querySelector("#pillarUpPriceInput");
 const pillarRoundUpInput = document.querySelector("#pillarRoundUpInput");
-const comboTwoDownPriceInput = document.querySelector("#comboTwoDownPriceInput");
-const comboTwoUpPriceInput = document.querySelector("#comboTwoUpPriceInput");
-const comboThreeDownPriceInput = document.querySelector("#comboThreeDownPriceInput");
-const comboThreeUpPriceInput = document.querySelector("#comboThreeUpPriceInput");
-const comboFourDownPriceInput = document.querySelector("#comboFourDownPriceInput");
-const comboFourUpPriceInput = document.querySelector("#comboFourUpPriceInput");
+const comboTwoUnitPriceInput = document.querySelector("#comboTwoUnitPriceInput");
+const comboThreeUnitPriceInput = document.querySelector("#comboThreeUnitPriceInput");
+const comboFourUnitPriceInput = document.querySelector("#comboFourUnitPriceInput");
 const carPrizeInput = document.querySelector("#carPrizeInput");
 const pillarTwoPrizeInput = document.querySelector("#pillarTwoPrizeInput");
 const pillarThreePrizeInput = document.querySelector("#pillarThreePrizeInput");
@@ -334,6 +331,13 @@ function loadPersistentSettings() {
         input.value = saved.pillarThreeUpPrizeInput || saved.pillarThreeDownPrizeInput || input.value;
       } else if (input.id === "pillarFourPrizeInput") {
         input.value = saved.pillarFourUpPrizeInput || saved.pillarFourDownPrizeInput || input.value;
+      } else if (input.id === "comboTwoUnitPriceInput") {
+        input.value = saved.comboTwoUnitPriceInput || saved.comboTwoDownPriceInput || saved.comboTwoUpPriceInput || input.value;
+      } else if (input.id === "comboThreeUnitPriceInput") {
+        input.value =
+          saved.comboThreeUnitPriceInput || saved.comboThreeDownPriceInput || saved.comboThreeUpPriceInput || input.value;
+      } else if (input.id === "comboFourUnitPriceInput") {
+        input.value = saved.comboFourUnitPriceInput || saved.comboFourDownPriceInput || saved.comboFourUpPriceInput || input.value;
       } else if (input.id === "comboTwoPrizeInput") {
         input.value = saved.comboTwoUpPrizeInput || saved.comboTwoDownPrizeInput || input.value;
       } else if (input.id === "comboThreePrizeInput") {
@@ -443,23 +447,26 @@ function starToPickCount(star) {
 
 function getComboStarPrice(star) {
   if (star === "二星") {
+    const price = toNumber(comboTwoUnitPriceInput.value);
     return {
-      downPrice: toNumber(comboTwoDownPriceInput.value),
-      upPrice: toNumber(comboTwoUpPriceInput.value),
+      downPrice: price,
+      upPrice: price,
     };
   }
 
   if (star === "三星") {
+    const price = toNumber(comboThreeUnitPriceInput.value);
     return {
-      downPrice: toNumber(comboThreeDownPriceInput.value),
-      upPrice: toNumber(comboThreeUpPriceInput.value),
+      downPrice: price,
+      upPrice: price,
     };
   }
 
   if (star === "四星") {
+    const price = toNumber(comboFourUnitPriceInput.value);
     return {
-      downPrice: toNumber(comboFourDownPriceInput.value),
-      upPrice: toNumber(comboFourUpPriceInput.value),
+      downPrice: price,
+      upPrice: price,
     };
   }
 
@@ -1363,7 +1370,7 @@ function recalculate() {
       upPriceInput.value = upPrice ?? "";
       downPriceInput.readOnly = true;
       upPriceInput.readOnly = true;
-      const priceTitle = isComboType(type) ? "連碰使用上方二星/三星/四星單價" : `${type}使用上方統一單價`;
+      const priceTitle = isComboType(type) ? "連碰使用上方二星/三星/四星每碰單價" : `${type}使用上方統一單價`;
       downPriceInput.title = priceTitle;
       upPriceInput.title = priceTitle;
     } else {
