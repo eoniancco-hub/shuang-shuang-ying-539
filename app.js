@@ -40,7 +40,7 @@ const SETTINGS_STORAGE_KEY = "shuang-shuang-ying-539-rate-settings-v1";
 const DRAFT_STORAGE_KEY = "shuang-shuang-ying-539-current-draft-v1";
 let isRestoringDraft = false;
 const persistentSettingInputs = Array.from(
-  document.querySelectorAll(".setting-price input[type='number'], .setting-prize input[type='number']")
+  document.querySelectorAll(".setting-price input:not([type='checkbox']), .setting-prize input")
 );
 const persistentSettingCheckboxes = Array.from(
   document.querySelectorAll(".setting-option input[type='checkbox']")
@@ -61,8 +61,85 @@ function todayString() {
 }
 
 function toNumber(value) {
-  const number = Number(value);
-  return Number.isFinite(number) ? number : 0;
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+  const raw = String(value ?? "").trim();
+  if (!raw) return 0;
+
+  const directNumber = Number(raw.replace(/,/g, ""));
+  if (Number.isFinite(directNumber)) return directNumber;
+
+  return evaluateNumberExpression(raw);
+}
+
+function evaluateNumberExpression(raw) {
+  const expression = String(raw)
+    .replace(/[，,]/g, "")
+    .replace(/[＋]/g, "+")
+    .replace(/[－]/g, "-")
+    .replace(/[＊×xX]/g, "*")
+    .replace(/[／÷]/g, "/")
+    .replace(/\s+/g, "");
+
+  if (!/^[\d+\-*/().]+$/.test(expression)) return 0;
+
+  let index = 0;
+
+  function peek() {
+    return expression[index];
+  }
+
+  function consume(char) {
+    if (peek() === char) {
+      index += 1;
+      return true;
+    }
+    return false;
+  }
+
+  function parseNumber() {
+    const start = index;
+    while (/\d|\./.test(peek() || "")) index += 1;
+    if (start === index) return NaN;
+    return Number(expression.slice(start, index));
+  }
+
+  function parseFactor() {
+    if (consume("+")) return parseFactor();
+    if (consume("-")) return -parseFactor();
+    if (consume("(")) {
+      const value = parseExpression();
+      if (!consume(")")) return NaN;
+      return value;
+    }
+    return parseNumber();
+  }
+
+  function parseTerm() {
+    let value = parseFactor();
+    while (peek() === "*" || peek() === "/") {
+      const operator = expression[index];
+      index += 1;
+      const right = parseFactor();
+      if (operator === "*") value *= right;
+      if (operator === "/") value /= right;
+    }
+    return value;
+  }
+
+  function parseExpression() {
+    let value = parseTerm();
+    while (peek() === "+" || peek() === "-") {
+      const operator = expression[index];
+      index += 1;
+      const right = parseTerm();
+      if (operator === "+") value += right;
+      if (operator === "-") value -= right;
+    }
+    return value;
+  }
+
+  const result = parseExpression();
+  return index === expression.length && Number.isFinite(result) ? result : 0;
 }
 
 function formatMoney(value) {
