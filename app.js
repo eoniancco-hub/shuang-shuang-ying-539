@@ -1621,16 +1621,19 @@ confirmDrawBtn.addEventListener("click", () => {
 window.addEventListener("beforeprint", () => setPrintMode(true));
 window.addEventListener("afterprint", () => setPrintMode(false));
 
-document.querySelectorAll(".settings-card input").forEach((input) => {
+function bindPersistentSettingInput(input) {
   input.addEventListener("input", () => {
-    if (persistentSettingInputs.includes(input) || persistentSettingCheckboxes.includes(input)) savePersistentSettings();
+    savePersistentSettings();
     recalculate();
   });
   input.addEventListener("change", () => {
-    if (persistentSettingInputs.includes(input) || persistentSettingCheckboxes.includes(input)) savePersistentSettings();
+    savePersistentSettings();
     recalculate();
   });
-});
+}
+
+persistentSettingInputs.forEach(bindPersistentSettingInput);
+persistentSettingCheckboxes.forEach(bindPersistentSettingInput);
 
 drawNumberInputs.forEach((input, index) => {
   input.addEventListener("input", () => {
