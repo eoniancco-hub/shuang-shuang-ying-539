@@ -149,6 +149,11 @@ function formatMoney(value) {
   return currencyFormatter.format(value).replace("NT$", "$");
 }
 
+function formatWholeMoney(value) {
+  const rounded = Math.round(value);
+  return `$${rounded.toLocaleString("zh-TW")}`;
+}
+
 function formatCount(value) {
   return Number(value.toFixed(4)).toString();
 }
@@ -176,7 +181,7 @@ function renderBreakdown(element, breakdown, amountKey, formulaText = "") {
   const subtotal = stake - prize;
   element.innerHTML = `
     ${formulaText ? `<span class="unit-price-col summary-formula">${formulaText}</span>` : ""}
-    <span class="settlement-formula">簽牌費用 ${formatMoney(stake)} - 中獎金額 ${formatMoney(prize)} = <b>${formatMoney(subtotal)}</b></span>
+    <span class="settlement-formula">簽牌費用 ${formatWholeMoney(stake)} - 中獎金額 ${formatWholeMoney(prize)} = <b>${formatWholeMoney(subtotal)}</b></span>
   `;
 }
 
@@ -186,7 +191,7 @@ function renderTypeBreakdown(element, breakdown, amountKey, formulaText = "") {
   const subtotal = stake - prize;
   element.innerHTML = `
     ${formulaText ? `<span class="unit-price-col summary-formula">${formulaText}</span>` : ""}
-    <span class="settlement-formula">簽牌費用 ${formatMoney(stake)} - 中獎金額 ${formatMoney(prize)} = <b>${formatMoney(subtotal)}</b></span>
+    <span class="settlement-formula">簽牌費用 ${formatWholeMoney(stake)} - 中獎金額 ${formatWholeMoney(prize)} = <b>${formatWholeMoney(subtotal)}</b></span>
   `;
 }
 
@@ -276,7 +281,7 @@ function getSummaryFormula(type, count, amountKey) {
   if (count === 0) return "";
   const unit = type === "坐車" ? "車" : "注";
   const price = getUnitPriceForView(type, amountKey);
-  return `${formatCount(count)}${unit} × ${formatMoney(price)} = ${formatMoney(count * price)}`;
+  return `${formatCount(count)}${unit} × 單價${formatWholeMoney(price)} = ${formatWholeMoney(count * price)}`;
 }
 
 function getViewName(view) {
