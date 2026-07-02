@@ -16,6 +16,7 @@ const carDownPriceInput = document.querySelector("#carDownPriceInput");
 const carUpPriceInput = document.querySelector("#carUpPriceInput");
 const pillarDownPriceInput = document.querySelector("#pillarDownPriceInput");
 const pillarUpPriceInput = document.querySelector("#pillarUpPriceInput");
+const pillarRoundUpInput = document.querySelector("#pillarRoundUpInput");
 const comboTwoDownPriceInput = document.querySelector("#comboTwoDownPriceInput");
 const comboTwoUpPriceInput = document.querySelector("#comboTwoUpPriceInput");
 const comboThreeDownPriceInput = document.querySelector("#comboThreeDownPriceInput");
@@ -46,6 +47,9 @@ const DRAFT_STORAGE_KEY = "shuang-shuang-ying-539-current-draft-v1";
 let isRestoringDraft = false;
 const persistentSettingInputs = Array.from(
   document.querySelectorAll(".setting-price input[type='number'], .setting-prize input[type='number']")
+);
+const persistentSettingCheckboxes = Array.from(
+  document.querySelectorAll(".setting-option input[type='checkbox']")
 );
 
 const currencyFormatter = new Intl.NumberFormat("zh-TW", {
@@ -110,6 +114,7 @@ function renderTypeBreakdown(element, breakdown, amountKey, formulaText = "") {
   const subtotal = stake - prize;
   element.innerHTML = `
     ${formulaText ? `<span class="unit-price-col summary-formula">${formulaText}</span>` : ""}
+    <span>支出 ${formatMoney(stake)}</span>
     <span class="win-line">中獎金額 ${formatMoney(prize)}</span>
     <span>小計 ${formatMoney(stake)} - ${formatMoney(prize)} = ${formatMoney(subtotal)}</span>
   `;
@@ -260,6 +265,11 @@ function loadPersistentSettings() {
         input.value = saved.comboFourUpPrizeInput || saved.comboFourDownPrizeInput || input.value;
       }
     });
+    persistentSettingCheckboxes.forEach((input) => {
+      if (Object.prototype.hasOwnProperty.call(saved, input.id)) {
+        input.checked = Boolean(saved[input.id]);
+      }
+    });
   } catch {
     localStorage.removeItem(SETTINGS_STORAGE_KEY);
   }
@@ -269,6 +279,9 @@ function savePersistentSettings() {
   const payload = {};
   persistentSettingInputs.forEach((input) => {
     payload[input.id] = input.value;
+  });
+  persistentSettingCheckboxes.forEach((input) => {
+    payload[input.id] = input.checked;
   });
   localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(payload));
 }
@@ -431,6 +444,19 @@ function getPillarStarMultiplier(row, star) {
   return input ? toNumber(input.value) : 0;
 }
 
+function shouldRoundUpPillarCount() {
+  return Boolean(pillarRoundUpInput?.checked);
+}
+
+function getPillarRawBillableCount(row, star) {
+  return getPillarFormulaCount(row, star) * getPillarStarMultiplier(row, star);
+}
+
+function getPillarBillableCount(row, star) {
+  const rawCount = getPillarRawBillableCount(row, star);
+  return shouldRoundUpPillarCount() ? Math.ceil(rawCount) : rawCount;
+}
+
 function getPillarPatternSummary(row) {
   const { values } = parsePattern(row.querySelector(".pillar-pattern-input").value);
   if (!values.length) return "";
@@ -486,7 +512,10 @@ function getPrintCountLines(type, row, count, billableCount) {
       .map((star) => {
         const formulaCount = getPillarFormulaCount(row, star);
         const multiplier = getPillarStarMultiplier(row, star);
-        return `${star} ${formatCount(formulaCount)}組 × ${formatCount(multiplier)} = ${formatCount(formulaCount * multiplier)}注`;
+        const rawCount = formulaCount * multiplier;
+        const billedCount = getPillarBillableCount(row, star);
+        const roundedNote = billedCount !== rawCount ? ` → ${formatCount(billedCount)}注` : "";
+        return `${star} ${formatCount(formulaCount)}組 × ${formatCount(multiplier)} = ${formatCount(rawCount)}注${roundedNote}`;
       });
     lines.push(`合計 ${formatCount(billableCount)}注`);
     return lines;
@@ -531,9 +560,11 @@ function renderPillarCountNotes(row, type) {
     const star = note.dataset.star;
     const formulaCount = getPillarFormulaCount(row, star);
     const multiplier = toNumber(input?.value);
-    const subtotal = formulaCount * multiplier;
+    const rawSubtotal = formulaCount * multiplier;
+    const subtotal = getPillarBillableCount(row, star);
     total += subtotal;
-    note.textContent = `${formulaCount}組 × ${formatCount(multiplier)} = ${formatCount(subtotal)}注`;
+    const roundedNote = subtotal !== rawSubtotal ? ` → ${formatCount(subtotal)}注` : "";
+    note.textContent = `${formulaCount}組 × ${formatCount(multiplier)} = ${formatCount(rawSubtotal)}注${roundedNote}`;
   });
   totalEl.textContent = `合計 ${formatCount(total)}注`;
 }
@@ -637,6 +668,51 @@ function renderNumberPreview(preview, raw, drawSet) {
     }
     preview.append(chip);
   });
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function printNumberChip(number, drawSet) {
+  const normalized = normalizeNumber(number);
+  const display = normalized || number;
+  const hitClass = normalized && drawSet.has(normalized) ? " hit-number" : "";
+  return `<span class="number-chip${hitClass}">${escapeHtml(display)}</span>`;
+}
+
+function getPrintNumbersHtml(row, type, drawSet) {
+  if (type !== "立柱") {
+    const input = row.querySelector(".plain-numbers-input");
+    return splitNumbers(input?.value || "")
+      .map((part) => printNumberChip(part, drawSet))
+      .join("");
+  }
+
+  return Array.from(row.querySelectorAll(".pillar-number-input"))
+    .map((input) => {
+      const groupSize = Math.max(1, Number(input.dataset.groupSize) || 1);
+      const occurrences = Math.max(1, Number(input.dataset.groupOccurrences) || 1);
+      const numbers = normalizeNumbers(input.value).normalized;
+
+      if (groupSize === 1) {
+        return numbers.map((number) => printNumberChip(number, drawSet)).join("");
+      }
+
+      const groups = [];
+      for (let index = 0; index < Math.max(occurrences, Math.ceil(numbers.length / groupSize)); index += 1) {
+        const chunk = numbers.slice(index * groupSize, index * groupSize + groupSize);
+        if (chunk.length === 0) continue;
+        groups.push(`<span class="print-pillar-stack">${chunk.map((number) => printNumberChip(number, drawSet)).join("")}</span>`);
+      }
+      return groups.join("");
+    })
+    .join("");
 }
 
 function parsePattern(rawPattern) {
@@ -808,7 +884,7 @@ function getPlainNumberCount(row) {
 function getBillableCount(type, row, count) {
   if (type === "立柱") {
     return getSelectedStars(row).reduce((total, star) => {
-      return total + getPillarFormulaCount(row, star) * getPillarStarMultiplier(row, star);
+      return total + getPillarBillableCount(row, star);
     }, 0);
   }
 
@@ -827,7 +903,7 @@ function calculatePillarAmounts(row) {
   let upAmount = 0;
 
   selectedStars.forEach((star) => {
-    const billableCount = getPillarFormulaCount(row, star) * getPillarStarMultiplier(row, star);
+    const billableCount = getPillarBillableCount(row, star);
     downAmount += billableCount * downPrice;
     upAmount += billableCount * upPrice;
   });
@@ -1119,16 +1195,11 @@ function recalculate() {
     updateNumberPreviews(row, drawSet);
     row.querySelector(".type-print").textContent = type;
 
-    const numberPreviews = Array.from(row.querySelectorAll(".number-preview"))
-      .filter((preview) => !preview.hidden && preview.innerHTML.trim())
-      .map((preview) => preview.innerHTML)
-      .join("");
-
     printRows.push({
       type,
       starsSummary: getPrintStarsSummary(type, row),
       summary: type === "立柱" ? row.querySelector(".pillar-item-summary").textContent : "",
-      numbersHtml: numberPreviews,
+      numbersHtml: getPrintNumbersHtml(row, type, drawSet),
       countLines: getPrintCountLines(type, row, count, billableCount),
       hasHit,
       amounts: {
@@ -1334,7 +1405,11 @@ window.addEventListener("afterprint", () => setPrintMode(false));
 
 document.querySelectorAll(".settings-card input").forEach((input) => {
   input.addEventListener("input", () => {
-    if (persistentSettingInputs.includes(input)) savePersistentSettings();
+    if (persistentSettingInputs.includes(input) || persistentSettingCheckboxes.includes(input)) savePersistentSettings();
+    recalculate();
+  });
+  input.addEventListener("change", () => {
+    if (persistentSettingInputs.includes(input) || persistentSettingCheckboxes.includes(input)) savePersistentSettings();
     recalculate();
   });
 });

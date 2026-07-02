@@ -168,6 +168,26 @@ button.danger {
   grid-template-columns: repeat(4, 120px);
 }
 
+.setting-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 29px;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fffdf7;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.setting-checkbox input {
+  width: auto;
+  margin: 0;
+}
+
 .settings-memory-note {
   margin: 2px 0 0;
   color: var(--muted);
@@ -757,6 +777,17 @@ th {
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
+}
+
+.print-pillar-stack {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+  padding: 3px 4px;
+  border: 1px solid rgb(117 98 78 / 0.35);
+  border-radius: 999px;
+  background: #fffaf0;
 }
 
 .print-row-amount {
