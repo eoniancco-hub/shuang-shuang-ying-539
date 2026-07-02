@@ -924,8 +924,11 @@ th {
   font-weight: 900;
 }
 
-.print-row-amount.has-hit strong,
 .print-row-amount.has-hit small {
+  color: var(--primary);
+}
+
+.print-row-amount strong.negative {
   color: var(--primary);
 }
 
@@ -1255,7 +1258,12 @@ body.is-printing .print-row-amount small {
 }
 
 body.is-printing .print-row-amount strong {
-  font-size: 11px;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+body.is-printing .print-row-amount strong.negative {
+  color: var(--primary);
 }
 
 body.is-printing .print-number-group,
@@ -1663,7 +1671,12 @@ body.is-printing .total-card strong {
   }
 
   .print-row-amount strong {
-    font-size: 11px;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .print-row-amount strong.negative {
+    color: var(--primary);
   }
 
   .print-number-group,

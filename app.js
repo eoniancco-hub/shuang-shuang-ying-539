@@ -245,9 +245,9 @@ function renderPrintRows(rows, amountKey) {
 
     const amount = document.createElement("div");
     amount.className = rowData.hasHit ? "print-row-amount has-hit" : "print-row-amount";
+    const netAmount = rowData.amounts[amountKey].stake - rowData.amounts[amountKey].prize;
     amount.innerHTML = `
-      <span>${getAmountLabel(amountKey)}</span>
-      <strong>${formatWholeMoney(rowData.amounts[amountKey].stake - rowData.amounts[amountKey].prize)}</strong>
+      <strong class="${netAmount < 0 ? "negative" : ""}">${formatWholeMoney(netAmount)}</strong>
       ${rowData.amounts[amountKey].prize ? `<small>中獎 ${formatWholeMoney(rowData.amounts[amountKey].prize)}</small>` : ""}
     `;
 
