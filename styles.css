@@ -140,7 +140,7 @@ button.danger {
   padding: 10px 12px;
   border-radius: 14px;
   margin-bottom: 10px;
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
   overflow-x: auto;
   scrollbar-gutter: stable;
@@ -155,7 +155,7 @@ button.danger {
 
 .settings-groups-row {
   display: grid;
-  grid-template-columns: 230px 360px 360px;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(360px, 1.1fr) minmax(360px, 1.1fr);
   gap: 8px;
   align-items: stretch;
 }
@@ -193,7 +193,7 @@ button.danger {
 }
 
 .settings-mini-grid.one-col {
-  grid-template-columns: minmax(100px, 1fr);
+  grid-template-columns: repeat(2, minmax(100px, 1fr));
 }
 
 .setting-checkbox {
@@ -336,10 +336,6 @@ input:disabled {
 #appRoot[data-hide-prices="true"] .view-margin,
 #appRoot[data-hide-prices="true"] .view-btn[data-view="margin"] {
   display: none;
-}
-
-#appRoot[data-hide-prices="true"] .settings-card {
-  width: fit-content;
 }
 
 #appRoot[data-hide-prices="true"] .settings-groups-row {
@@ -668,6 +664,24 @@ th {
 .entry-row.has-hit .up-amount,
 .entry-row.has-hit .margin-amount {
   color: var(--primary);
+}
+
+.entry-row.has-hit {
+  background: linear-gradient(90deg, rgb(179 32 42 / 0.17), rgb(255 240 184 / 0.78));
+  box-shadow: inset 5px 0 0 var(--primary);
+}
+
+.entry-row.has-hit td {
+  border-bottom-color: rgb(179 32 42 / 0.32);
+}
+
+.entry-row.has-hit .numbers-input,
+.entry-row.has-hit .pillar-number-input,
+.entry-row.has-hit .count-input,
+.entry-row.has-hit .down-price-input,
+.entry-row.has-hit .up-price-input {
+  border-color: rgb(179 32 42 / 0.55);
+  background: #fff9ec;
 }
 
 .row-warning {
