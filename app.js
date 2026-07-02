@@ -27,6 +27,9 @@ const pillarFourPrizeInput = document.querySelector("#pillarFourPrizeInput");
 const comboTwoPrizeInput = document.querySelector("#comboTwoPrizeInput");
 const comboThreePrizeInput = document.querySelector("#comboThreePrizeInput");
 const comboFourPrizeInput = document.querySelector("#comboFourPrizeInput");
+const previousBalanceInput = document.querySelector("#previousBalanceInput");
+const currentPeriodTotalEl = document.querySelector("#currentPeriodTotal");
+const grandTotalEl = document.querySelector("#grandTotal");
 const downTotalEl = document.querySelector("#downTotal");
 const upTotalEl = document.querySelector("#upTotal");
 const marginTotalEl = document.querySelector("#marginTotal");
@@ -43,7 +46,7 @@ const SETTINGS_STORAGE_KEY = "shuang-shuang-ying-539-rate-settings-v1";
 const DRAFT_STORAGE_KEY = "shuang-shuang-ying-539-current-draft-v1";
 let isRestoringDraft = false;
 const persistentSettingInputs = Array.from(
-  document.querySelectorAll(".setting-price input:not([type='checkbox']), .setting-prize input")
+  document.querySelectorAll(".setting-price input:not([type='checkbox']), .setting-prize input, #previousBalanceInput")
 );
 const persistentSettingCheckboxes = Array.from(
   document.querySelectorAll(".setting-option input[type='checkbox']")
@@ -1424,6 +1427,10 @@ function recalculate() {
   downTotalEl.textContent = formatWholeMoney(getBreakdownNet(totalBreakdown, "down"));
   upTotalEl.textContent = formatWholeMoney(getBreakdownNet(totalBreakdown, "up"));
   marginTotalEl.textContent = formatWholeMoney(getBreakdownNet(totalBreakdown, "margin"));
+  const currentPeriodTotal = getBreakdownNet(totalBreakdown, amountKey);
+  const previousBalance = toNumber(previousBalanceInput?.value);
+  currentPeriodTotalEl.textContent = formatWholeMoney(currentPeriodTotal);
+  grandTotalEl.textContent = formatWholeMoney(previousBalance + currentPeriodTotal);
 
   renderPrintRows(printRows, amountKey);
   carCountTotalEl.textContent = `${formatCount(typeTotals.坐車.count)} 車`;

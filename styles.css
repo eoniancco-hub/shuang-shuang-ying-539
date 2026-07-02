@@ -709,16 +709,33 @@ th {
 
 .bottom-summary-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
   gap: 10px;
   margin-bottom: 12px;
 }
 
+.balance-card,
 .type-summary-card {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 14px 16px;
+}
+
+.balance-card {
+  background: linear-gradient(135deg, #fffaf0 0%, #fff0c7 100%);
+}
+
+.balance-card label {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.balance-card input {
+  margin-top: 5px;
+  max-width: 180px;
+  font-size: 20px;
+  font-weight: 900;
 }
 
 .type-summary-card span {
