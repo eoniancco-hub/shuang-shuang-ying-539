@@ -197,8 +197,8 @@ function renderTypeBreakdown(element, breakdown, amountKey, formulaText = "") {
 
 function renderRowAmount(element, stake, prize) {
   element.innerHTML = `
-    <small>費用 ${formatMoney(stake)}</small>
-    <small class="row-prize-line">中獎 ${formatMoney(prize)}</small>
+    <small>費用 ${formatWholeMoney(stake)}</small>
+    <small class="row-prize-line">中獎 ${formatWholeMoney(prize)}</small>
   `;
 }
 
@@ -244,8 +244,8 @@ function renderPrintRows(rows, amountKey) {
     amount.className = rowData.hasHit ? "print-row-amount has-hit" : "print-row-amount";
     amount.innerHTML = `
       <span>${getAmountLabel(amountKey)}</span>
-      <strong>${formatMoney(rowData.amounts[amountKey].stake - rowData.amounts[amountKey].prize)}</strong>
-      ${rowData.amounts[amountKey].prize ? `<small>中獎 ${formatMoney(rowData.amounts[amountKey].prize)}</small>` : ""}
+      <strong>${formatWholeMoney(rowData.amounts[amountKey].stake - rowData.amounts[amountKey].prize)}</strong>
+      ${rowData.amounts[amountKey].prize ? `<small>中獎 ${formatWholeMoney(rowData.amounts[amountKey].prize)}</small>` : ""}
     `;
 
     item.append(type, numbers, count, amount);
@@ -1421,9 +1421,9 @@ function recalculate() {
     });
   });
 
-  downTotalEl.textContent = formatMoney(getBreakdownNet(totalBreakdown, "down"));
-  upTotalEl.textContent = formatMoney(getBreakdownNet(totalBreakdown, "up"));
-  marginTotalEl.textContent = formatMoney(getBreakdownNet(totalBreakdown, "margin"));
+  downTotalEl.textContent = formatWholeMoney(getBreakdownNet(totalBreakdown, "down"));
+  upTotalEl.textContent = formatWholeMoney(getBreakdownNet(totalBreakdown, "up"));
+  marginTotalEl.textContent = formatWholeMoney(getBreakdownNet(totalBreakdown, "margin"));
 
   renderPrintRows(printRows, amountKey);
   carCountTotalEl.textContent = `${formatCount(typeTotals.坐車.count)} 車`;
