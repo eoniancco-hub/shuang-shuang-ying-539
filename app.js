@@ -17,6 +17,12 @@ const carUpPriceInput = document.querySelector("#carUpPriceInput");
 const pillarDownPriceInput = document.querySelector("#pillarDownPriceInput");
 const pillarUpPriceInput = document.querySelector("#pillarUpPriceInput");
 const pillarRoundUpInput = document.querySelector("#pillarRoundUpInput");
+const comboTwoDownPriceInput = document.querySelector("#comboTwoDownPriceInput");
+const comboTwoUpPriceInput = document.querySelector("#comboTwoUpPriceInput");
+const comboThreeDownPriceInput = document.querySelector("#comboThreeDownPriceInput");
+const comboThreeUpPriceInput = document.querySelector("#comboThreeUpPriceInput");
+const comboFourDownPriceInput = document.querySelector("#comboFourDownPriceInput");
+const comboFourUpPriceInput = document.querySelector("#comboFourUpPriceInput");
 const carPrizeInput = document.querySelector("#carPrizeInput");
 const pillarTwoPrizeInput = document.querySelector("#pillarTwoPrizeInput");
 const pillarThreePrizeInput = document.querySelector("#pillarThreePrizeInput");
@@ -437,26 +443,23 @@ function starToPickCount(star) {
 
 function getComboStarPrice(star) {
   if (star === "二星") {
-    const price = toNumber(comboTwoPrizeInput.value);
     return {
-      downPrice: price,
-      upPrice: price,
+      downPrice: toNumber(comboTwoDownPriceInput.value),
+      upPrice: toNumber(comboTwoUpPriceInput.value),
     };
   }
 
   if (star === "三星") {
-    const price = toNumber(comboThreePrizeInput.value);
     return {
-      downPrice: price,
-      upPrice: price,
+      downPrice: toNumber(comboThreeDownPriceInput.value),
+      upPrice: toNumber(comboThreeUpPriceInput.value),
     };
   }
 
   if (star === "四星") {
-    const price = toNumber(comboFourPrizeInput.value);
     return {
-      downPrice: price,
-      upPrice: price,
+      downPrice: toNumber(comboFourDownPriceInput.value),
+      upPrice: toNumber(comboFourUpPriceInput.value),
     };
   }
 
@@ -1360,7 +1363,7 @@ function recalculate() {
       upPriceInput.value = upPrice ?? "";
       downPriceInput.readOnly = true;
       upPriceInput.readOnly = true;
-      const priceTitle = isComboType(type) ? "連碰使用下方二星/三星/四星獎欄位" : `${type}使用上方統一單價`;
+      const priceTitle = isComboType(type) ? "連碰使用上方二星/三星/四星單價" : `${type}使用上方統一單價`;
       downPriceInput.title = priceTitle;
       upPriceInput.title = priceTitle;
     } else {
