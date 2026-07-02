@@ -191,10 +191,8 @@ function renderTypeBreakdown(element, breakdown, amountKey, formulaText = "") {
 }
 
 function renderRowAmount(element, stake, prize) {
-  const subtotal = stake - prize;
   element.innerHTML = `
-    <strong>${formatMoney(subtotal)}</strong>
-    <small>支出 ${formatMoney(stake)}</small>
+    <small>費用 ${formatMoney(stake)}</small>
     <small class="row-prize-line">中獎 ${formatMoney(prize)}</small>
   `;
 }

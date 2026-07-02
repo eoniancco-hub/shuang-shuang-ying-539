@@ -643,10 +643,10 @@ th {
 
 .money small {
   display: block;
-  margin-top: 3px;
+  margin-top: 2px;
   color: var(--ink);
-  font-size: 14px;
-  line-height: 1.25;
+  font-size: 15px;
+  line-height: 1.3;
 }
 
 .money .row-prize-line {
@@ -1146,7 +1146,6 @@ body.is-printing .money strong {
   font-size: 14px;
 }
 
-body.is-printing .money small,
 body.is-printing .row-warning {
   display: none;
 }
@@ -1446,10 +1445,6 @@ body.is-printing .bottom-summary-grid {
 
   .money strong {
     font-size: 14px;
-  }
-
-  .money small {
-    display: none;
   }
 
   .row-warning {
