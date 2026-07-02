@@ -660,12 +660,27 @@ th {
 }
 
 .entry-row.has-hit {
-  background: linear-gradient(90deg, rgb(179 32 42 / 0.17), rgb(255 240 184 / 0.78));
-  box-shadow: inset 5px 0 0 var(--primary);
+  background: linear-gradient(90deg, rgb(179 32 42 / 0.28), rgb(255 218 170 / 0.9));
+  box-shadow: inset 6px 0 0 var(--primary), inset 0 0 0 999px rgb(179 32 42 / 0.03);
 }
 
 .entry-row.has-hit td {
-  border-bottom-color: rgb(179 32 42 / 0.32);
+  border-bottom-color: rgb(179 32 42 / 0.42);
+}
+
+.entry-row.has-hit td:first-child::after {
+  content: "🏆 中獎";
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fffaf0;
+  font-size: 14px;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
 .entry-row.has-hit .numbers-input,
@@ -673,8 +688,8 @@ th {
 .entry-row.has-hit .count-input,
 .entry-row.has-hit .down-price-input,
 .entry-row.has-hit .up-price-input {
-  border-color: rgb(179 32 42 / 0.55);
-  background: #fff9ec;
+  border-color: rgb(179 32 42 / 0.7);
+  background: #fff4e3;
 }
 
 .row-warning {
